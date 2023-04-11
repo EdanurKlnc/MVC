@@ -20,6 +20,8 @@ namespace PhoneBookBusinessLayer.EmailSenderBusiness
         public string Smtp => _configuration.GetSection("EmailOptions:Smtp").Value;
         public int SmtpPort => Convert.ToInt32(_configuration.GetSection("EmailOptions:SmtpPort").Value);
 
+        public string CCManager => _configuration.GetSection("ProjectManagersEmails").Value;
+
         private void MailInfoSet(EmailMessage message, out MailMessage mail, out SmtpClient client) //void dışarıya gönderim yapamadığı için out ile dışarıya aktarıyoruz 
         {
             try
@@ -32,6 +34,25 @@ namespace PhoneBookBusinessLayer.EmailSenderBusiness
                 foreach (var item in message.To)
                 {
                     mail.To.Add(item);
+                }
+                if (message.CC != null)
+                {
+                    foreach (var item in message.CC)
+                    {
+                        mail.CC.Add(item);
+                    }
+                }
+                if (message.CC != null)
+                {
+                    foreach (var item in message.CC)
+                    {
+                        mail.Bcc.Add(item);
+                    }
+                }
+
+                foreach(var item in CCManager.ToString().Split(","))
+                    {
+                    mail.CC.Add(item);
                 }
                 mail.Subject = message.Subject;
                 mail.Body = message.Body;

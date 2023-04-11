@@ -23,10 +23,10 @@ namespace PhoneBookEntityLayer.ViewModels
         public string Surname { get; set; }
 
         [Required]
-        public byte[] PasswordHash { get; set; } //Sifreyi haslemek için
+        public string PasswordHash { get; set; } //Sifreyi haslemek için
 
         [Required]
-        public string Salt { get; set; }
+        public byte[] Salt { get; set; }
 
         [Required] //db deki not null kutucuğu ile aynı
         public DateTime CreatedDate { get; set; }

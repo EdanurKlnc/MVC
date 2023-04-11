@@ -1,7 +1,12 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using PhoneBookBusinessLayer.EmailSenderBusiness;
+using PhoneBookBusinessLayer.ImplementatinOfManagers;
+using PhoneBookBusinessLayer.InterfacesOfManagers;
 using PhoneBookDataLayer;
-using PhoneBookEntityLayer.Entities.Mappings;
+using PhoneBookDataLayer.ImplementationOfRepo;
+using PhoneBookDataLayer.InterfaceOfRepo;
+using PhoneBookEntityLayer.Mappings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +20,11 @@ builder.Services.AddAutoMapper(x =>
 });
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+//interfacelerin iþlerini gerçekleþtirecek classlarý burada yaþam döngülerini (inject) etmeliyiz.
+builder.Services.AddScoped<IMemberManager, MemberManager>();
+builder.Services.AddScoped<IMemberRepository, MemberRepository>();
+builder.Services.AddScoped <IEmailSender , EmailSender>();
 
 var app = builder.Build();
 

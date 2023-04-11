@@ -5,7 +5,7 @@ namespace PhoneBookEntityLayer.ResultModels
     {
         public T Data { get ; set ; }
 
-        public DataResult(bool success, T data): base(success)
+        public DataResult( bool success, T data): base(success)
         {
             Data = data;
 

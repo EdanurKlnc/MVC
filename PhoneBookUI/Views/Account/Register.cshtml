@@ -1,0 +1,71 @@
+﻿@model RegisterViewModel // bu sayfa bir model kullanacağını belirtiyoruz.(Modeli tanıtıyoruz)
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h3>Şimdi Kayıt Olabilirsiniz</h3>
+<div class="row">
+    <div class="col-md-6 offset-3">
+
+        <form asp-controller="Account" asp-action="Register" method="post">
+            <div class="text-danger" asp-validation-summary="All">
+                <!-- asp-validation-summary modelin içindeki kuralların uyuşmadığı zaman hata olarak ekranın en üstüne yazdırır-->
+            </div>
+
+            <div class="form-group">
+                <label style="font-weight:bold">Ad :</label>
+                <input type="text" class="form-control" asp-for="Name" /> <!--asp-for => MVC Texlerini getirir.Textte yazdıklarımızı kayır eder-->
+                <span class="text-danger" asp-validation-for="Name"></span> <!--Hatayı textn atında gösterir-->
+            </div> <br />
+
+            <div class="form-group">
+                <label style="font-weight:bold">Soyad :</label>
+                <input type="text" class="form-control" name="Surname" />
+                <span class="text-danger" asp-validation-for="Surname"></span>
+                <!--Hatayı textte gösterir-->
+            </div> <br />
+
+
+            <div class="form-group">
+                <label style="font-weight:bold">Email :</label>
+                <input type="text" class="form-control" asp-form="Email" />
+            </div> <br />
+
+
+            <div class="form-group">
+                <label style="font-weight:bold">Şifre :</label>
+                <input type="password" class="form-control" asp-for="Password" />
+            </div> <br />
+
+            <div class="form-group">
+                <label style="font-weight:bold">Şifre Tekrar :</label>
+                <input type="password" class="form-control" asp-for="ComparePassword" />
+            </div> <br />
+
+
+            <div class="form-group">
+                <label style="font-weight:bold">Doğum Tarihi :</label>
+                <input type="date" class="form-control" asp-for="BirthDate" />
+            </div> <br />
+
+
+            <div class="form-group">
+                <label style="font-weight:bold">Cinsiyet :</label>
+                <select class="form-control" asp-for="Gender">
+                    <option value="1">Kadın</option>
+                    <option value="2">Erkek</option>
+                </select>
+            </div> <br />
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-info">Kayıt Ol</button>
+                <a class="btn btn-danger">Giriş Yap</a>
+            </div> <br />
+
+        </form>
+
+    </div>
+
+</div>
+
