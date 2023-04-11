@@ -48,13 +48,13 @@ namespace PhoneBookDataLayer.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<byte[]>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("Salt")
+                    b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("Salt")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("Surname")
                         .IsRequired()

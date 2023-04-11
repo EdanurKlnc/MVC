@@ -1,11 +1,9 @@
-﻿
-
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
 namespace PhoneBookUI.Models
 {
-    public class RegisterViewModel : Controller
+    public class RegisterViewModel 
     {
         [Required(ErrorMessage ="Ad alanı gereklidir!")]
         [StringLength(50,MinimumLength=2, ErrorMessage = "Ad maks 50 min 2 karakter olmalı!") ]

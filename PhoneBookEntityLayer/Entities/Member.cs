@@ -25,10 +25,10 @@ namespace PhoneBookEntityLayer.Entities
         public string Surname { get; set; }
 
         [Required]
-        public byte[] PasswordHash { get; set; } //Sifreyi haslemek için
+        public string PasswordHash { get; set; } //Sifreyi haslemek için
 
         [Required]
-        public string Salt { get; set; }
+        public byte[] Salt { get; set; }
 
         [Required] //db deki not null kutucuğuna benzer işlevde
         [DataType(DataType.DateTime)]

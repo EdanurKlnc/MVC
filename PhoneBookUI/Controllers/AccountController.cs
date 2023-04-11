@@ -43,14 +43,14 @@ namespace PhoneBookUI.Controllers
                 // Ekleme işlemleri 
 
                 //1) Aynı emailden tekrar kayıt olamaz! 
-                var isSameEmail = _memberManager.GetByConditions
-                    (x => x.Email.ToLower() == model.Email.ToLower()).Data;
+                //var isSameEmail = _memberManager.GetByConditions
+                //    (x => x.Email.ToLower() == model.Email.ToLower()).Data;
 
-                if (isSameEmail != null)
-                {
-                    ModelState.AddModelError("", "Dikkat bu kullanıcı sistemde zaten mevcuttur!");
-                    return View(model);
-                }
+                //if (isSameEmail != null)
+                //{
+                //    ModelState.AddModelError("", "Dikkat bu kullanıcı sistemde zaten mevcuttur!");
+                //    return View(model);
+                //}
                 MemberViewModel member = new MemberViewModel()
                 {
                     Email = model.Email,
