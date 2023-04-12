@@ -1,0 +1,49 @@
+﻿@*@using PhoneBookEntityLayer.ViewModels => Buraya yazmak yerine _ViewImports classına ekliyoruz. Bütün projede import edilmiş olur.Tekrar tekrar using etmeye gerek kalmaz*@
+@model MemberPhoneViewModel
+
+@{
+    ViewData["Title"] = "AddPhone";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-8 offset-2">
+        <form asp-controller="Home" asp-action="AddPhone" method="post">
+            @*Bilgi gönderdiği için post*@
+
+            <div class="text-danger" asp-validation-summary="All">
+
+                <div class="form-group">
+                    <label> Telefon Tipi :</label>
+                    <select class="form-control" asp-for="PhoneTypeId">
+                        @foreach (PhoneTypeViewModel item in ViewBag.PhoneTypes)
+                        {
+                            <option value="@item.Id">
+                                @item.Name
+                            </option>
+                        }
+
+                    </select>
+                </div>  <br />
+
+                <div class="form-group">
+                    <label>Ad Soyad :</label>
+                    <input type="text" class="form-control" asp-for="FriendNameSurname" required />
+                </div> <br />
+
+                <div class="form-group">
+                    <label>Telefon :</label>
+                    <input type="text" class="form-control" asp-for="Phone" required />  @*required=> arkaya düşmeden ön yüzde işi halleder.*@
+                </div><br />
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div><br />
+                <input type ="hidden" asp-for="MemberId" />
+
+
+            </div>
+        </form>
+    </div>
+</div>
+

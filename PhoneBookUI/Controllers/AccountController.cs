@@ -1,9 +1,13 @@
 ﻿using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PhoneBookBusinessLayer.EmailSenderBusiness;
 using PhoneBookBusinessLayer.InterfacesOfManagers;
 using PhoneBookEntityLayer.ViewModels;
 using PhoneBookUI.Models;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -43,14 +47,14 @@ namespace PhoneBookUI.Controllers
                 // Ekleme işlemleri 
 
                 //1) Aynı emailden tekrar kayıt olamaz! 
-                //var isSameEmail = _memberManager.GetByConditions
-                //    (x => x.Email.ToLower() == model.Email.ToLower()).Data;
+                var isSameEmail = _memberManager.GetByConditions
+                    (x => x.Email.ToLower() == model.Email.ToLower()).Data;
 
-                //if (isSameEmail != null)
-                //{
-                //    ModelState.AddModelError("", "Dikkat bu kullanıcı sistemde zaten mevcuttur!");
-                //    return View(model);
-                //}
+                if (isSameEmail != null)
+                {
+                    ModelState.AddModelError("", "Dikkat bu kullanıcı sistemde zaten mevcuttur!");
+                    return View(model);
+                }
                 MemberViewModel member = new MemberViewModel()
                 {
                     Email = model.Email,
@@ -81,8 +85,7 @@ namespace PhoneBookUI.Controllers
                     _emailSender.SendEmail(email);
 
 
-                    //buraya kaydınız gerçekleşti yazılacak
-                    return RedirectToAction("Login", "Account", new { email = model.Email });
+                    TempData["RegisterSuccessMessage"] = $"{member.Name} {member.Surname} kaydınız gerçekleşti. Giriş yapabilirsiniz."; return RedirectToAction("Login", "Account", new { email = model.Email });
                 }
                 else
                 {
@@ -111,6 +114,58 @@ namespace PhoneBookUI.Controllers
                 return View(model);
             }
             return View(new LoginViewModel());
+        }
+
+
+        //giriş yapmakiçin gelen bilgiyi alma
+        [HttpPost]
+        public IActionResult Login(LoginViewModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    //ViewBag => sayfaya bilgi göndermek için kullanılır. noktadan sonra dinamik değişken yazıyoruz(deişken adını istediğimiz şekilde isimlendirebiliriz)
+                    ViewBag.LoginErrorMsg = $"Gerekli alanları doldurunuz!";
+                    return View(model);
+                }
+                var user = _memberManager.GetById(model.Email).Data;
+                if (user == null)
+                {
+                    ViewBag.LoginErrorMsg = $"Kullanıcı adı veya şifre hatalı!";
+                    return View(model);
+                }
+
+                //sifrenin doğru olup olmadığına bakıyoruz. Geriye bool değer döndürür.
+                var passwordCompare = VerifyPassword(model.Password, user.PasswordHash, user.Salt);
+                if (!passwordCompare) //sifre yanlış ise
+                {
+                    ViewBag.LoginErrorMsg = $"Kullanıcı adı veya şifre hatalı!";
+                    return View(model);
+                }
+
+                //sifre doğru ise kişinin bilgilerini cokkie olarak kayıt edeceğiz.Home Index sayfasına yönlendirilecek
+                var identity = new ClaimsIdentity(IdentityConstants.ApplicationScheme);
+                identity.AddClaim(new(ClaimTypes.Name, user.Email));
+                HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+
+                return RedirectToAction("Index", "Home");  //RedirectToAction => sayfa yönlendirilmesi
+
+            }
+            catch (Exception ex)
+            {
+
+                ViewBag.LoginErrorMsg = $"Beklenmedik bir hata oluştu {ex.Message}";
+                return View(model);
+
+            }
+        }
+
+        public IActionResult Logout()
+        {
+            //çıkış yap
+            HttpContext.SignOutAsync();
+            return RedirectToAction("Login", "Account");
         }
         //sifre hashleme
         string HashPasword(string password, out byte[] salt)

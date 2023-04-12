@@ -49,11 +49,15 @@ namespace PhoneBookBusinessLayer.EmailSenderBusiness
                         mail.Bcc.Add(item);
                     }
                 }
-
-                foreach(var item in CCManager.ToString().Split(","))
+                if (CCManager !=null)
+                {
+                    foreach (var item in CCManager.ToString().Split(","))
                     {
-                    mail.CC.Add(item);
+                        mail.CC.Add(item);
+                    }
                 }
+
+
                 mail.Subject = message.Subject;
                 mail.Body = message.Body;
                 mail.IsBodyHtml = true;

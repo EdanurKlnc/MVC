@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PhoneBookUI.Models
 {
-    public class LoginViewModel : Controller
+    public class LoginViewModel 
     {
         [Required(ErrorMessage = "Email gereklidir!")]
         // Regular expression eklenebilir
