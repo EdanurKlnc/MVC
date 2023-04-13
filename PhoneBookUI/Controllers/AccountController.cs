@@ -116,8 +116,7 @@ namespace PhoneBookUI.Controllers
             return View(new LoginViewModel());
         }
 
-
-        //giriş yapmakiçin gelen bilgiyi alma
+        //giriş yapmak için gelen bilgiyi alma
         [HttpPost]
         public IActionResult Login(LoginViewModel model)
         {

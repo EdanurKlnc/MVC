@@ -60,7 +60,7 @@ namespace PhoneBookDataLayer.ImplementationOfRepo
                         query = query.Include(item); //join yapıyor
                     }
                 }
-                return query;
+                return query.AsNoTracking();
             }
             catch (Exception)
             {
@@ -88,7 +88,7 @@ namespace PhoneBookDataLayer.ImplementationOfRepo
                         query = query.Include(item); //join yapıyor
                     }
                 }
-                return query.FirstOrDefault();// query içinden ilk gelen datayı geri gönderir.
+                return query.AsNoTracking().FirstOrDefault();// query içinden ilk gelen datayı geri gönderir.
             }
             catch (Exception)
             {
