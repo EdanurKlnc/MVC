@@ -50,7 +50,15 @@ namespace PhoneBookUI.Controllers
         {
             try
             {
+                var phoneTypes = _phoneTypeManager.GetAll().Data;
                 ViewBag.PhoneTypes = _phoneTypeManager.GetAll().Data; //IsRemoved
+
+                ViewBag.FirstPhoneTypeId = -1;
+                if (phoneTypes.Count > 0)
+                {
+                    ViewBag.FirstPhoneTypeId = phoneTypes.FirstOrDefault()?.Id;
+                }
+
                 MemberPhoneViewModel model = new MemberPhoneViewModel()
                 {
                     MemberId = HttpContext.User.Identity?.Name
@@ -85,6 +93,27 @@ namespace PhoneBookUI.Controllers
                     return View(model);
 
                 }
+
+                if (model.AnotherPhoneTypeName != null)
+                {
+                    //diğeri secip veritabanında bulunan bir tür girerse
+                    var samePhoneType = _phoneTypeManager.GetByConditions(x => x.Name.ToLower() == model.AnotherPhoneTypeName.ToLower()).Data;
+                    if (samePhoneType != null)
+                    {
+                        ModelState.AddModelError("", $"{samePhoneType.Name} zaten mevcuttur!");
+                        return View(model);
+                    }
+                    //diğer ile kelediği türü alıp ıd'sini ekledik
+                    PhoneTypeViewModel phoneType = new PhoneTypeViewModel()
+                    {
+                        CreatedDate = DateTime.Now,
+                        Name = model.AnotherPhoneTypeName
+                    };
+                    var result = _phoneTypeManager.Add(phoneType).Data;
+                    model.PhoneTypeId = result.Id;
+
+                }
+
                 //diğer seceneğin senaryosu yarın
                 model.CreatedDate = DateTime.Now;
                 model.IsRemoved = false;
@@ -179,34 +208,75 @@ namespace PhoneBookUI.Controllers
         {
             try
             {
+                ViewBag.PhoneTypes = _phoneTypeManager.GetAll().Data;
+                if (id <= 0)
+                {
+                    ModelState.AddModelError("", "id değeri sıfırdan küçük olamaz!");
+                    return View();
+                }
+
                 var phone = _memberPhoneManager.GetById(id).Data;
+                if (phone == null)
+                {
+                    ModelState.AddModelError("", "Kayıt bulunamadı!");
+                    return View();
+                }
+
+                var country = phone.Phone.Substring(0, 3);
+                phone.CountryCode = country;
+                phone.Phone = phone.Phone.Substring(3);
                 return View(phone);
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", "Beklenmedik bir hata oluştu" + ex.Message);
+                ModelState.AddModelError("", "Beklenmedik hata" + ex.Message);
                 return View();
             }
         }
 
-        //güncelleme işlemi
         [HttpPost]
         [Authorize]
         public IActionResult EditPhone(MemberPhoneViewModel model)
         {
             try
             {
-                var phone = _memberPhoneManager.GetById(model.Id).Data;
-                phone.Phone = model.Phone;
-                phone.FriendNameSurname = model.FriendNameSurname;
+                ViewBag.PhoneTypes = _phoneTypeManager.GetAll().Data;
 
-                _memberPhoneManager.Update(phone);
-                return RedirectToAction("Index", "Home");
+                var phone = _memberPhoneManager.GetById(model.Id).Data;
+                if (phone == null)
+                {
+                    ModelState.AddModelError("", "Kayıt bulunmadı!");
+                    return View(model);
+                }
+
+                //Var olan bir telefonu mu yazmış?
+                var samePhone = _memberPhoneManager.GetByConditions(x => x.Id!= model.Id &&
+                x.MemberId == HttpContext.User.Identity.Name && x.Phone == (model.CountryCode + model.Phone)).Data;
+
+                if (samePhone != null)
+                {
+                    ModelState.AddModelError("", $"{model.Phone} şeklindeki telefon {samePhone.FriendNameSurname} adlı kişiye aittir! Lütfen numarayı kontrol ediniz!");
+                    return View(model);
+                }
+
+                phone.Phone = model.CountryCode + model.Phone;
+                phone.FriendNameSurname = model.FriendNameSurname;
+                phone.PhoneTypeId = model.PhoneTypeId;
+
+                if (_memberPhoneManager.Update(phone).IsSuccess)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Güncelleme başarısız oldu! Tekrar deneyiniz!");
+                    return View(model);
+                }
 
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", "Beklenmedik bir hata oluştu" + ex.Message);
+                ModelState.AddModelError("", "Beklenmedik hata" + ex.Message);
                 return View();
             }
         }
