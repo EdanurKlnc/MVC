@@ -32,9 +32,9 @@ builder.Services.AddControllersWithViews();
 //interfacelerin iþlerini gerçekleþtirecek classlarý burada yaþam döngülerini (inject) etmeliyiz.
 builder.Services.AddScoped<IMemberManager, MemberManager>();
 builder.Services.AddScoped<IMemberRepository, MemberRepository>();
-builder.Services.AddScoped <IEmailSender , EmailSender>();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 
-builder.Services.AddScoped <IPhoneTypeRepository , PhoneTypeRepository>();
+builder.Services.AddScoped<IPhoneTypeRepository, PhoneTypeRepository>();
 builder.Services.AddScoped<IPhoneTypeManager, PhoneTypeManager>();
 
 builder.Services.AddScoped<IMemberPhoneRepository, MemberPhoneRepository>();
@@ -54,6 +54,12 @@ app.UseRouting(); //browserdki url için hoe/index gidebilmesi için
 
 app.UseAuthentication(); //login ve logout iþlemleri için
 app.UseAuthorization(); //Yetkilendirme için
+
+
+app.MapControllerRoute(
+    name: "areas",
+   pattern: "{area:exists}/{controller=Home}/{action=Dashboard}/{id?}"
+   );
 
 app.MapControllerRoute(
     name: "default",
