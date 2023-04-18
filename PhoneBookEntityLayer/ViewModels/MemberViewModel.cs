@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace PhoneBookEntityLayer.ViewModels
 {
-    
+
     public class MemberViewModel
     {
-        [Required (ErrorMessage = "Email adresi boş olamaz")]
+        [Required(ErrorMessage = "Email adresi boş olamaz")]
         [StringLength(100, ErrorMessage = "Email max 100 karakter olmalı")]
         public string Email { get; set; }
 
@@ -37,6 +37,7 @@ namespace PhoneBookEntityLayer.ViewModels
         [Required]
         public bool IsRemoved { get; set; }
         public string? ForgetPasswordToken { get; set; }
+        public string? Picture { get; set; }
 
     }
 }
