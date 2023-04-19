@@ -6,6 +6,14 @@
 }
 
 @*Yeni bir sekme tasarlıyoruz. sekmeye gideceğimiz url [Router("")] ,çindeki adı oluyor. Sayfaya tıklayıp add view yaparak bu sayfası oluşturabiliriz.*@
+@if (TempData["MemberEditSuccessMsg"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @*<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill" /></svg>*@
+        @TempData["MemberEditSuccessMsg"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
 <h1>Sistemdeki tüm üyeler</h1>
 
 <!-- USERS LIST -->
@@ -25,36 +33,67 @@
     </div>
     <!-- /.card-header -->
     <div class="card-body p-0">
-        <ul class="users-list clearfix">
+        <ul class="users-list clearfix" id="uyeList">
             @foreach (var item in Model)
             {
-                <li>
-                    <img src="~/AdminLTE/dist/img/user1-128x128.jpg" alt="User Image">
-                    <a class="users-list-name" href="#">@item.Name @item.Surname.ToUpper()</a>
-                    <span class="text-danger" style="color:red">
+                MemberIndex sayfasındaki foreach'in içini tekrar düzenledik
+ 
+ <li>
+                    <a href="/admin/duzenle?id=@item.Email">
+                    @if (item.Picture==null)
+                    {
+                        if (item.Gender==1) //kadın
+                        {
+                            <img src="~/MemberPictures/anonimkadin.jpg"
+                            alt="User Image">
+
+                        }else
+                        {
+                            <img src="~/MemberPictures/anonimerkek.jpg"
+                     alt="User Image">
+                        }
+
+                    }
+                    else
+                    {
+                        <img src="@item.Picture" alt="User Image">
+       
+                    }
+
+
+                    <br/>
+                    <span
+                    style="font-weight:bold;color:black;">
+                        @item.Name @item.Surname.ToUpper()</span>
+                    <span class="users-list-date text-danger">
                         @{
+
                             TimeSpan span = new TimeSpan();
                             span = DateTime.Now - item.CreatedDate;
-                            var days = Convert.ToInt32(span.TotalDays);
+                            var days=Convert.ToInt32(span.TotalDays);
                             string result = string.Empty;
-                            if(days==0)
+                            if (days==0)
                             {
-                                result = "Yeni üye";
+                                result = "Yeni Üye";
                             }
                             else
                             {
-                                result = $"{days} Gündür üye";
+                                result = $"{days} Gündür Üye";
                             }
-                        }@result 
-
-                    </span>
+                        } @result
+                        </span>
+                    </a>
                 </li>
             }
-
-
         </ul>
         <!-- /.users-list -->
     </div>
     <!-- /.card-body -->
 </div>
 <!--/.card -->
+@section PageCss{
+    #uyeList li img{
+        width :160px !important;
+        height:160px !important;
+    }
+}
