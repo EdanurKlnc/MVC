@@ -36,51 +36,50 @@
         <ul class="users-list clearfix" id="uyeList">
             @foreach (var item in Model)
             {
-                MemberIndex sayfasındaki foreach'in içini tekrar düzenledik
- 
- <li>
+                <li>
                     <a href="/admin/duzenle?id=@item.Email">
-                    @if (item.Picture==null)
-                    {
-                        if (item.Gender==1) //kadın
+                        @if (item.Picture == null)
                         {
-                            <img src="~/MemberPictures/anonimkadin.jpg"
-                            alt="User Image">
-
-                        }else
-                        {
-                            <img src="~/MemberPictures/anonimerkek.jpg"
-                     alt="User Image">
-                        }
-
-                    }
-                    else
-                    {
-                        <img src="@item.Picture" alt="User Image">
-       
-                    }
-
-
-                    <br/>
-                    <span
-                    style="font-weight:bold;color:black;">
-                        @item.Name @item.Surname.ToUpper()</span>
-                    <span class="users-list-date text-danger">
-                        @{
-
-                            TimeSpan span = new TimeSpan();
-                            span = DateTime.Now - item.CreatedDate;
-                            var days=Convert.ToInt32(span.TotalDays);
-                            string result = string.Empty;
-                            if (days==0)
+                            if (item.Gender == 1) //kadın
                             {
-                                result = "Yeni Üye";
+                                <img src="~/MemberPictures/anonimkadin.jpg"
+                                     alt="User Image">
+
                             }
                             else
                             {
-                                result = $"{days} Gündür Üye";
+                                <img src="~/MemberPictures/anonimerkek.jpg"
+                                     alt="User Image">
                             }
-                        } @result
+
+                        }
+                        else
+                        {
+                            <img src="@item.Picture" alt="User Image">
+
+                        }
+
+
+                        <br />
+                        <span style="font-weight:bold;color:black;">
+                            @item.Name @item.Surname.ToUpper()
+                        </span>
+                        <span class="users-list-date text-danger">
+                            @{
+
+                                TimeSpan span = new TimeSpan();
+                                span = DateTime.Now - item.CreatedDate;
+                                var days = Convert.ToInt32(span.TotalDays);
+                                string result = string.Empty;
+                                if (days == 0)
+                                {
+                                    result = "Yeni Üye";
+                                }
+                                else
+                                {
+                                    result = $"{days} Gündür Üye";
+                                }
+                            } @result
                         </span>
                     </a>
                 </li>
